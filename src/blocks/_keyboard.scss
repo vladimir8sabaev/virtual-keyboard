@@ -1,0 +1,59 @@
+#keyboard {
+  display: block;
+  margin: 0 auto;
+  margin-top: 50px;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 5px;
+  max-width: 860px;
+  display: grid;
+  row-gap: 7px;
+  background-color: #7474748e;
+}
+.key {
+  background-color: #fff;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s all;
+  border-radius: 5px;
+  font-size: 20px;
+  &:active {
+    border-radius: 10px;
+    background-color: rgb(183, 0, 255);
+  }
+}
+.row {
+  width: 845px;
+  justify-content: space-between;
+  display: flex;
+  gap: 5px;
+}
+.extralarge {
+  width: 400px;
+}
+.backspace {
+  width: 115px;
+}
+
+.small {
+  width: 80px;
+}
+.large {
+  width: 140px;
+}
+.medium {
+  width: 90px;
+}
+.shiftright {
+  width: 105px;
+}
+
+.active {
+  background-color: rgb(183, 0, 255);
+  border-radius: 10px;
+}

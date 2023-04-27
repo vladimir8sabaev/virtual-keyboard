@@ -1,3 +1,7 @@
-h1{
-  color: red;
+@import "./blocks/textarea";
+@import "./blocks/keyboard";
+* {
+  margin: 0 0;
+  padding: 0 0;
+  box-sizing: border-box;
 }
