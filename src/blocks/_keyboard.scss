@@ -22,6 +22,7 @@
   transition: 0.3s all;
   border-radius: 5px;
   font-size: 20px;
+  user-select: none;
   &:active {
     border-radius: 10px;
     background-color: rgb(183, 0, 255);
@@ -56,4 +57,11 @@
 .active {
   background-color: rgb(183, 0, 255);
   border-radius: 10px;
+}
+.descr {
+  color: black;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 20px;
 }
