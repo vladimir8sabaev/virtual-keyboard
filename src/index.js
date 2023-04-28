@@ -2,7 +2,7 @@ import './index.html';
 import './style.scss';
 
 const body = document.querySelector('body');
-let language = 'ru';
+let language = 'en';
 body.innerHTML = `
                   <textarea class="textarea" name="textarea" id="textarea" cols="100" rows="20"></textarea>
                   <div id="keyboard"></div>
@@ -311,25 +311,52 @@ function init(obj) {
 init(keyMapEn);
 const textArea = document.querySelector('.textarea');
 
-function keyDownHandler(event) {
+function keyUpHandler(event) {
   event.preventDefault();
   const activeKey = document.querySelector(`[data-code="${event.code}"]`);
-  if (activeKey) {
-    activeKey.classList.add('active');
-    if (specialArr.indexOf(event.code) === -1) {
-      textArea.value += activeKey.textContent;
+  if (activeKey && event.code !== 'CapsLock') {
+    activeKey.classList.remove('active');
+  }
+  if (event.code === 'ShiftLeft') {
+    if (language === 'ru') {
+      init(keyMapRu);
+    } else {
+      init(keyMapEn);
     }
   }
 }
 
-function keyUpHandler(event) {
+function keyDownHandler(event) {
   event.preventDefault();
+  if (event.code === 'ShiftLeft') {
+    if (language === 'ru') {
+      init(keyMapRuShift);
+    } else {
+      init(keyMapEnShift);
+    }
+  }
+  if (event.code === 'Backspace') {
+    textArea.value = textArea.value.slice(0, textArea.value.length - 1);
+  }
+  if (event.code === 'Enter') {
+    textArea.value += '\n';
+  }
+  if (event.code === 'CapsLock') {
+    const caps = document.querySelector('[data-code="CapsLock"]');
+    caps.classList.toggle('active');
+  }
   const activeKey = document.querySelector(`[data-code="${event.code}"]`);
-  if (activeKey) {
-    activeKey.classList.remove('active');
+  if (activeKey && event.code !== 'CapsLock') {
+    activeKey.classList.add('active');
+    if (specialArr.indexOf(event.code) === -1) {
+      if (event.getModifierState('CapsLock')) {
+        textArea.value += activeKey.textContent.toUpperCase();
+      } else {
+        textArea.value += activeKey.textContent;
+      }
+    }
   }
 }
-
 function virtualKeysHandler() {
   const keys = document.querySelectorAll('.key');
   keys.forEach((key) => {
@@ -357,7 +384,7 @@ function changeLanguage(event) {
     const alt = document.querySelector('[data-code="AltLeft"]');
     alt.classList.add('active');
     ctrl.classList.add('active');
-    document.addEventListener('keyup', keyUpHandler);
+    // document.addEventListener('keyup', keyUpHandler);
   }
 }
 

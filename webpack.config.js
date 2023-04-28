@@ -39,9 +39,6 @@ module.exports = {
     new CopyPlugin({
       patterns: [{ from: 'src/img', to: 'img' }],
     }),
-    new CopyPlugin({
-      patterns: [{ from: 'src/keys.json', to: '' }],
-    }),
   ],
   module: {
     rules: [
