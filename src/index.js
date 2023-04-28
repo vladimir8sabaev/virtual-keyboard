@@ -310,9 +310,12 @@ function init(obj) {
 }
 
 init(keyMapEn);
+
 const textArea = document.querySelector('.textarea');
 const keys = document.querySelectorAll('.key');
-
+const leftShift = document.querySelector('[data-code="ShiftLeft"]');
+const rightShift = document.querySelector('[data-code="ShiftRight"]');
+const caps = document.querySelector('[data-code="CapsLock"]');
 function changeKeys(obj) {
   for (let i = 0; i < keys.length; i += 1) {
     keys[i].innerText = obj[keys[i].dataset.code];
@@ -326,10 +329,19 @@ function keyUpHandler(event) {
     activeKey.classList.remove('active');
   }
   if (event.key === 'Shift') {
+    leftShift.classList.remove('active');
+    rightShift.classList.remove('active');
     if (language === 'ru') {
       changeKeys(keyMapRu);
     } else {
       changeKeys(keyMapEn);
+    }
+    if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
+      for (let i = 0; i < keys.length; i += 1) {
+        if (keys[i].innerText.length === 1) {
+          keys[i].innerText = keys[i].innerText.toUpperCase();
+        }
+      }
     }
   }
 }
@@ -342,6 +354,13 @@ function keyDownHandler(event) {
     } else {
       changeKeys(keyMapEnShift);
     }
+    if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
+      for (let i = 0; i < keys.length; i += 1) {
+        if (keys[i].innerText.length === 1) {
+          keys[i].innerText = keys[i].innerText.toLowerCase();
+        }
+      }
+    }
   }
   if (event.code === 'Backspace') {
     textArea.value = textArea.value.slice(0, textArea.value.length - 1);
@@ -349,8 +368,10 @@ function keyDownHandler(event) {
   if (event.code === 'Enter') {
     textArea.value += '\n';
   }
+  if (event.code === 'Tab') {
+    textArea.value += '    ';
+  }
   if (event.code === 'CapsLock') {
-    const caps = document.querySelector('[data-code="CapsLock"]');
     caps.classList.toggle('active');
     for (let i = 0; i < keys.length; i += 1) {
       if (keys[i].innerText.length === 1) {
@@ -382,10 +403,26 @@ function changeShift(event) {
     } else {
       changeKeys(keyMapEn);
     }
-  } else if (language === 'ru') {
-    changeKeys(keyMapRuShift);
+    if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
+      for (let i = 0; i < keys.length; i += 1) {
+        if (keys[i].innerText.length === 1) {
+          keys[i].innerText = keys[i].innerText.toUpperCase();
+        }
+      }
+    }
   } else {
-    changeKeys(keyMapEnShift);
+    if (language === 'ru') {
+      changeKeys(keyMapRuShift);
+    } if (language === 'en') {
+      changeKeys(keyMapEnShift);
+    }
+    if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
+      for (let i = 0; i < keys.length; i += 1) {
+        if (keys[i].innerText.length === 1) {
+          keys[i].innerText = keys[i].innerText.toLowerCase();
+        }
+      }
+    }
   }
 }
 
@@ -393,15 +430,37 @@ function virtualKeysHandler() {
   keys.forEach((key) => {
     key.addEventListener('click', (event) => {
       keys.forEach((item) => {
-        item.classList.remove('active');
+        if (item.dataset.code !== 'CapsLock') {
+          item.classList.remove('active');
+        }
       });
       if (specialArr.indexOf(event.target.dataset.code) === -1) {
         textArea.value += event.target.textContent;
+      } else {
+        if (event.target.dataset.code === 'Tab') {
+          textArea.value += '    ';
+        }
+        if (event.target.dataset.code === 'Enter') {
+          textArea.value += '\n';
+        }
+        if (event.target.dataset.code === 'Backspace') {
+          textArea.value = textArea.value.slice(0, textArea.value.length - 1);
+        }
+        if (event.target.dataset.code === 'CapsLock') {
+          event.target.classList.toggle('active');
+          for (let i = 0; i < keys.length; i += 1) {
+            if (keys[i].innerText.length === 1) {
+              if (event.target.classList.contains('active')) {
+                keys[i].innerText = keys[i].innerText.toUpperCase();
+              } else {
+                keys[i].innerText = keys[i].innerText.toLowerCase();
+              }
+            }
+          }
+        }
       }
     });
   });
-  const leftShift = document.querySelector('[data-code="ShiftLeft"]');
-  const rightShift = document.querySelector('[data-code="ShiftRight"]');
   leftShift.addEventListener('mousedown', changeShift);
   rightShift.addEventListener('mousedown', changeShift);
   leftShift.addEventListener('mouseup', changeShift);
