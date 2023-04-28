@@ -2,6 +2,7 @@ import './index.html';
 import './style.scss';
 
 const body = document.querySelector('body');
+let language = 'ru';
 body.innerHTML = `
                   <textarea class="textarea" name="textarea" id="textarea" cols="100" rows="20"></textarea>
                   <div id="keyboard"></div>
@@ -68,7 +69,7 @@ const keyMapEn = {
   ControlLeft: 'Ctrl',
   MetaLeft: 'Win',
   AltLeft: 'Alt',
-  Space: '________',
+  Space: ' ',
   AltRight: 'Alt',
   ControlRight: 'Ctrl',
   ArrowLeft: '&larr;',
@@ -135,7 +136,140 @@ const keyMapEnShift = {
   ControlLeft: 'Ctrl',
   MetaLeft: 'Win',
   AltLeft: 'Alt',
-  Space: '________',
+  Space: ' ',
+  AltRight: 'Alt',
+  ControlRight: 'Ctrl',
+  ArrowLeft: '&#8592;',
+  ArrowDown: '&#8595;',
+  ArrowRight: '&#8594;',
+  Delete: 'del',
+};
+
+const keyMapRu = {
+  Backquote: 'ё',
+  Digit1: '1',
+  Digit2: '2',
+  Digit3: '3',
+  Digit4: '4',
+  Digit5: '5',
+  Digit6: '6',
+  Digit7: '7',
+  Digit8: '8',
+  Digit9: '9',
+  Digit0: '0',
+  Minus: '-',
+  Equal: '=',
+  Backspace: 'Backspace',
+  Tab: 'Tab',
+  KeyQ: 'й',
+  KeyW: 'ц',
+  KeyE: 'у',
+  KeyR: 'к',
+  KeyT: 'е',
+  KeyY: 'н',
+  KeyU: 'г',
+  KeyI: 'ш',
+  KeyO: 'щ',
+  KeyP: 'з',
+  BracketLeft: 'х',
+  BracketRight: 'ъ',
+  Backslash: '\\',
+  CapsLock: 'CapsLock',
+  KeyA: 'ф',
+  KeyS: 'ы',
+  KeyD: 'в',
+  KeyF: 'а',
+  KeyG: 'п',
+  KeyH: 'р',
+  KeyJ: 'о',
+  KeyK: 'л',
+  KeyL: 'д',
+  Semicolon: 'ж',
+  Quote: 'э',
+  Enter: 'Enter',
+  ShiftLeft: 'Shift',
+  KeyZ: 'я',
+  KeyX: 'ч',
+  KeyC: 'с',
+  KeyV: 'м',
+  KeyB: 'и',
+  KeyN: 'т',
+  KeyM: 'ь',
+  Comma: 'б',
+  Period: 'ю',
+  Slash: '.',
+  ShiftRight: 'Shift',
+  ArrowUp: '&#8593;',
+  ControlLeft: 'Ctrl',
+  MetaLeft: 'Win',
+  AltLeft: 'Alt',
+  Space: ' ',
+  AltRight: 'Alt',
+  ControlRight: 'Ctrl',
+  ArrowLeft: '&#8592;',
+  ArrowDown: '&#8595;',
+  ArrowRight: '&#8594;',
+  Delete: 'del',
+};
+const keyMapRuShift = {
+  ShiftLeft: 'Shift',
+  Backquote: 'Ё',
+  Digit1: '!',
+  Digit2: '"',
+  Digit3: '№',
+  Digit4: ';',
+  Digit5: '%',
+  Digit6: ':',
+  Digit7: '?',
+  Digit8: '*',
+  Digit9: '(',
+  Digit0: ')',
+  Minus: '_',
+  Equal: '+',
+  Backspace: 'Backspace',
+  Tab: 'Tab',
+  KeyQ: 'Й',
+  KeyW: 'Ц',
+  KeyE: 'У',
+  KeyR: 'К',
+  KeyT: 'Е',
+  KeyY: 'Н',
+  KeyU: 'Г',
+  KeyI: 'Ш',
+  KeyO: 'Щ',
+  KeyP: 'З',
+  BracketLeft: 'Х',
+  BracketRight: 'Ъ',
+  Backslash: '/',
+  CapsLock: 'CapsLock',
+  KeyA: 'Ф',
+  KeyS: 'Ы',
+  KeyD: 'В',
+  KeyF: 'А',
+  KeyG: 'П',
+  KeyH: 'Р',
+  KeyJ: 'О',
+  KeyK: 'Л',
+  KeyL: 'Д',
+  Semicolon: 'Ж',
+  Quote: 'Э',
+  Enter: 'Enter',
+  KeyZ: 'Я',
+  KeyX: 'Ч',
+  KeyC: 'С',
+  KeyV: 'М',
+  KeyB: 'И',
+  KeyN: 'Т',
+  KeyM: 'Ь',
+  Comma: 'Б',
+  Period: 'Ю',
+  Slash: ',',
+  ShiftRight: 'Shift',
+  ArrowUp: '&#8593;',
+  ControlLeft: 'Ctrl',
+  MetaLeft: 'Win',
+  AltLeft: 'Alt',
+  Space: ' ',
   AltRight: 'Alt',
   ControlRight: 'Ctrl',
   ArrowLeft: '&#8592;',
@@ -166,15 +300,16 @@ function makeRow(start, finish, object) {
   document.querySelector('#keyboard').innerHTML += `<div class="row">${out}</div>`;
 }
 
-function init() {
-  makeRow(0, 13, keyMapEn);
-  makeRow(14, 28, keyMapEn);
-  makeRow(29, 41, keyMapEn);
-  makeRow(42, 54, keyMapEn);
-  makeRow(55, 63, keyMapEn);
+function init(obj) {
+  document.querySelector('#keyboard').innerHTML = '';
+  makeRow(0, 13, obj);
+  makeRow(14, 28, obj);
+  makeRow(29, 41, obj);
+  makeRow(42, 54, obj);
+  makeRow(55, 63, obj);
 }
-init();
-
+init(keyMapRuShift);
+const textArea = document.querySelector('.textarea');
 // const keyObj = {};
 // document.addEventListener('keydown', (event) => {
 //   if (event.shiftKey) {
@@ -183,29 +318,56 @@ init();
 //   }
 // });
 
-window.addEventListener('DOMContentLoaded', () => {
-  const keys = document.querySelectorAll('.key');
-  const textArea = document.querySelector('.textarea');
-  document.addEventListener('keydown', (event) => {
-    console.log(event.code);
-    event.preventDefault();
+function keyDownHandler(event) {
+  event.preventDefault();
+  const activeKey = document.querySelector(`[data-code="${event.code}"]`);
+  if (activeKey) {
+    activeKey.classList.add('active');
     if (specialArr.indexOf(event.code) === -1) {
-      const activeKey = document.querySelector(`[data-code="${event.code}"]`);
-      activeKey.classList.add('active');
       textArea.value += activeKey.textContent;
     }
+  }
+}
+
+function keyUpHandler() {
+  const keys = document.querySelectorAll('.key');
+  keys.forEach((key) => {
+    key.classList.remove('active');
   });
-  document.addEventListener('keyup', () => {
-    keys.forEach((key) => {
-      key.classList.remove('active');
-    });
-  });
+}
+
+function virtualKeysHandler() {
+  const keys = document.querySelectorAll('.key');
   keys.forEach((key) => {
     key.addEventListener('click', (event) => {
       keys.forEach((item) => {
         item.classList.remove('active');
       });
-      textArea.value += event.target.textContent;
+      if (specialArr.indexOf(event.target.dataset.code) === -1) {
+        textArea.value += event.target.textContent;
+      }
     });
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('keydown', keyDownHandler);
+  document.addEventListener('keyup', keyUpHandler);
+  virtualKeysHandler();
+  document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey) {
+      document.addEventListener('keydown', (otherEvent) => {
+        if (otherEvent.altKey) {
+          if (language === 'ru') {
+            init(keyMapEn);
+            language = 'en';
+          } else {
+            init(keyMapRu);
+            language = 'ru';
+          }
+          document.addEventListener('keyup', keyUpHandler);
+        }
+      });
+    }
   });
 });
