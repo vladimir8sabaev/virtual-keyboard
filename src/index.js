@@ -308,15 +308,8 @@ function init(obj) {
   makeRow(42, 54, obj);
   makeRow(55, 63, obj);
 }
-init(keyMapRuShift);
+init(keyMapEn);
 const textArea = document.querySelector('.textarea');
-// const keyObj = {};
-// document.addEventListener('keydown', (event) => {
-//   if (event.shiftKey) {
-//     keyObj[event.code] = event.key;
-//     console.log(keyObj);
-//   }
-// });
 
 function keyDownHandler(event) {
   event.preventDefault();
@@ -329,11 +322,12 @@ function keyDownHandler(event) {
   }
 }
 
-function keyUpHandler() {
-  const keys = document.querySelectorAll('.key');
-  keys.forEach((key) => {
-    key.classList.remove('active');
-  });
+function keyUpHandler(event) {
+  event.preventDefault();
+  const activeKey = document.querySelector(`[data-code="${event.code}"]`);
+  if (activeKey) {
+    activeKey.classList.remove('active');
+  }
 }
 
 function virtualKeysHandler() {
@@ -350,24 +344,26 @@ function virtualKeysHandler() {
   });
 }
 
+function changeLanguage(event) {
+  if (event.ctrlKey && event.altKey) {
+    if (language === 'ru') {
+      init(keyMapEn);
+      language = 'en';
+    } else {
+      init(keyMapRu);
+      language = 'ru';
+    }
+    const ctrl = document.querySelector('[data-code="ControlLeft"]');
+    const alt = document.querySelector('[data-code="AltLeft"]');
+    alt.classList.add('active');
+    ctrl.classList.add('active');
+    document.addEventListener('keyup', keyUpHandler);
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', keyDownHandler);
   document.addEventListener('keyup', keyUpHandler);
   virtualKeysHandler();
-  document.addEventListener('keydown', (event) => {
-    if (event.ctrlKey) {
-      document.addEventListener('keydown', (otherEvent) => {
-        if (otherEvent.altKey) {
-          if (language === 'ru') {
-            init(keyMapEn);
-            language = 'en';
-          } else {
-            init(keyMapRu);
-            language = 'ru';
-          }
-          document.addEventListener('keyup', keyUpHandler);
-        }
-      });
-    }
-  });
+  document.addEventListener('keydown', changeLanguage);
 });
