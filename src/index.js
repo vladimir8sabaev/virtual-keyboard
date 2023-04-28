@@ -65,16 +65,16 @@ const keyMapEn = {
   Period: '.',
   Slash: '/',
   ShiftRight: 'Shift',
-  ArrowUp: '&#8593;',
+  ArrowUp: '⇧',
   ControlLeft: 'Ctrl',
   MetaLeft: 'Win',
   AltLeft: 'Alt',
   Space: ' ',
   AltRight: 'Alt',
   ControlRight: 'Ctrl',
-  ArrowLeft: '&larr;',
-  ArrowDown: '&#8595;',
-  ArrowRight: '&#8594;',
+  ArrowLeft: '⇦',
+  ArrowDown: '⇩',
+  ArrowRight: '⇨',
   Delete: 'del',
 };
 const specialArr = ['Backspace', 'Tab', 'CapsLock', 'Enter', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight', 'ControlRight', 'Delete'];
@@ -132,16 +132,16 @@ const keyMapEnShift = {
   Period: '>',
   Slash: '?',
   ShiftRight: 'Shift',
-  ArrowUp: '&#8593;',
+  ArrowUp: '⇧',
   ControlLeft: 'Ctrl',
   MetaLeft: 'Win',
   AltLeft: 'Alt',
   Space: ' ',
   AltRight: 'Alt',
   ControlRight: 'Ctrl',
-  ArrowLeft: '&#8592;',
-  ArrowDown: '&#8595;',
-  ArrowRight: '&#8594;',
+  ArrowLeft: '⇦',
+  ArrowDown: '⇩',
+  ArrowRight: '⇨',
   Delete: 'del',
 };
 
@@ -199,16 +199,16 @@ const keyMapRu = {
   Period: 'ю',
   Slash: '.',
   ShiftRight: 'Shift',
-  ArrowUp: '&#8593;',
+  ArrowUp: '⇧',
   ControlLeft: 'Ctrl',
   MetaLeft: 'Win',
   AltLeft: 'Alt',
   Space: ' ',
   AltRight: 'Alt',
   ControlRight: 'Ctrl',
-  ArrowLeft: '&#8592;',
-  ArrowDown: '&#8595;',
-  ArrowRight: '&#8594;',
+  ArrowLeft: '⇦',
+  ArrowDown: '⇩',
+  ArrowRight: '⇨',
   Delete: 'del',
 };
 const keyMapRuShift = {
@@ -265,16 +265,16 @@ const keyMapRuShift = {
   Period: 'Ю',
   Slash: ',',
   ShiftRight: 'Shift',
-  ArrowUp: '&#8593;',
+  ArrowUp: '⇧',
   ControlLeft: 'Ctrl',
   MetaLeft: 'Win',
   AltLeft: 'Alt',
   Space: ' ',
   AltRight: 'Alt',
   ControlRight: 'Ctrl',
-  ArrowLeft: '&#8592;',
-  ArrowDown: '&#8595;',
-  ArrowRight: '&#8594;',
+  ArrowLeft: '⇦',
+  ArrowDown: '⇩',
+  ArrowRight: '⇨',
   Delete: 'del',
 };
 
@@ -308,8 +308,16 @@ function init(obj) {
   makeRow(42, 54, obj);
   makeRow(55, 63, obj);
 }
+
 init(keyMapEn);
 const textArea = document.querySelector('.textarea');
+const keys = document.querySelectorAll('.key');
+
+function changeKeys(obj) {
+  for (let i = 0; i < keys.length; i += 1) {
+    keys[i].innerText = obj[keys[i].dataset.code];
+  }
+}
 
 function keyUpHandler(event) {
   event.preventDefault();
@@ -317,22 +325,22 @@ function keyUpHandler(event) {
   if (activeKey && event.code !== 'CapsLock') {
     activeKey.classList.remove('active');
   }
-  if (event.code === 'ShiftLeft') {
+  if (event.key === 'Shift') {
     if (language === 'ru') {
-      init(keyMapRu);
+      changeKeys(keyMapRu);
     } else {
-      init(keyMapEn);
+      changeKeys(keyMapEn);
     }
   }
 }
 
 function keyDownHandler(event) {
   event.preventDefault();
-  if (event.code === 'ShiftLeft') {
+  if (event.key === 'Shift') {
     if (language === 'ru') {
-      init(keyMapRuShift);
+      changeKeys(keyMapRuShift);
     } else {
-      init(keyMapEnShift);
+      changeKeys(keyMapEnShift);
     }
   }
   if (event.code === 'Backspace') {
@@ -344,6 +352,15 @@ function keyDownHandler(event) {
   if (event.code === 'CapsLock') {
     const caps = document.querySelector('[data-code="CapsLock"]');
     caps.classList.toggle('active');
+    for (let i = 0; i < keys.length; i += 1) {
+      if (keys[i].innerText.length === 1) {
+        if (!event.getModifierState('CapsLock')) {
+          keys[i].innerText = keys[i].innerText.toLowerCase();
+        } else {
+          keys[i].innerText = keys[i].innerText.toUpperCase();
+        }
+      }
+    }
   }
   const activeKey = document.querySelector(`[data-code="${event.code}"]`);
   if (activeKey && event.code !== 'CapsLock') {
@@ -357,8 +374,22 @@ function keyDownHandler(event) {
     }
   }
 }
+
+function changeShift(event) {
+  if (event.type === 'mouseup') {
+    if (language === 'ru') {
+      changeKeys(keyMapRu);
+    } else {
+      changeKeys(keyMapEn);
+    }
+  } else if (language === 'ru') {
+    changeKeys(keyMapRuShift);
+  } else {
+    changeKeys(keyMapEnShift);
+  }
+}
+
 function virtualKeysHandler() {
-  const keys = document.querySelectorAll('.key');
   keys.forEach((key) => {
     key.addEventListener('click', (event) => {
       keys.forEach((item) => {
@@ -369,22 +400,23 @@ function virtualKeysHandler() {
       }
     });
   });
+  const leftShift = document.querySelector('[data-code="ShiftLeft"]');
+  const rightShift = document.querySelector('[data-code="ShiftRight"]');
+  leftShift.addEventListener('mousedown', changeShift);
+  rightShift.addEventListener('mousedown', changeShift);
+  leftShift.addEventListener('mouseup', changeShift);
+  rightShift.addEventListener('mouseup', changeShift);
 }
 
 function changeLanguage(event) {
   if (event.ctrlKey && event.altKey) {
     if (language === 'ru') {
-      init(keyMapEn);
+      changeKeys(keyMapEn);
       language = 'en';
     } else {
-      init(keyMapRu);
+      changeKeys(keyMapRu);
       language = 'ru';
     }
-    const ctrl = document.querySelector('[data-code="ControlLeft"]');
-    const alt = document.querySelector('[data-code="AltLeft"]');
-    alt.classList.add('active');
-    ctrl.classList.add('active');
-    // document.addEventListener('keyup', keyUpHandler);
   }
 }
 
