@@ -1,9 +1,6 @@
 import './index.html';
 import './style.scss';
-import {
-  keyMapEn, keyMapRu, keyMapEnShift, keyMapRuShift, specialArr,
-} from './modules/alphabet.js';
-import makeRow from './modules/createRow.js';
+import { makeRow, alphabet } from './modules/renderKeyboard.js';
 
 document.querySelector('body').innerHTML = `
                   <textarea class="textarea" name="textarea" id="textarea" cols="100" rows="20"></textarea>
@@ -13,18 +10,17 @@ document.querySelector('body').innerHTML = `
                   `;
 
 let cursorPosition = 0;
-let language = 'en';
+const specialArr = ['Backspace', 'Tab', 'CapsLock', 'Enter', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight', 'ControlRight', 'Delete'];
 
-function init(obj) {
+function init() {
   document.querySelector('#keyboard').innerHTML = '';
-  makeRow(0, 13, obj);
-  makeRow(14, 28, obj);
-  makeRow(29, 41, obj);
-  makeRow(42, 54, obj);
-  makeRow(55, 63, obj);
-  language = obj.Language;
+  makeRow(0, 13);
+  makeRow(14, 28);
+  makeRow(29, 41);
+  makeRow(42, 54);
+  makeRow(55, 63);
 }
-init(JSON.parse(localStorage.getItem('object')) || keyMapEn);
+init();
 
 const textArea = document.querySelector('.textarea');
 const keys = document.querySelectorAll('.key');
@@ -32,15 +28,19 @@ const leftShift = document.querySelector('[data-code="ShiftLeft"]');
 const rightShift = document.querySelector('[data-code="ShiftRight"]');
 const caps = document.querySelector('[data-code="CapsLock"]');
 
+function changeKeys(lang) {
+  for (let i = 0; i < keys.length; i += 1) {
+    keys[i].innerText = alphabet[i][lang];
+  }
+  localStorage.setItem('language', lang);
+}
+
+changeKeys(localStorage.getItem('language') || 'keyEn');
+
 function setCaretPosition(ctrl, start, end) {
   if (ctrl.setSelectionRange) {
     ctrl.focus();
     ctrl.setSelectionRange(start, end);
-  }
-}
-function changeKeys(obj) {
-  for (let i = 0; i < keys.length; i += 1) {
-    keys[i].innerText = obj[keys[i].dataset.code];
   }
 }
 
@@ -53,10 +53,10 @@ function keyUpHandler(event) {
   if (event.key === 'Shift') {
     leftShift.classList.remove('active');
     rightShift.classList.remove('active');
-    if (language === 'ru') {
-      changeKeys(keyMapRu);
+    if (localStorage.getItem('language') === 'keyRu') {
+      changeKeys('keyRn');
     } else {
-      changeKeys(keyMapEn);
+      changeKeys('keyEn');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
       for (let i = 0; i < keys.length; i += 1) {
@@ -72,10 +72,10 @@ function keyDownHandler(event) {
   cursorPosition = textArea.selectionStart;
   event.preventDefault();
   if (event.key === 'Shift') {
-    if (language === 'ru') {
-      changeKeys(keyMapRuShift);
+    if (localStorage.getItem('language') === 'keyRu') {
+      changeKeys('keyRuShift');
     } else {
-      changeKeys(keyMapEnShift);
+      changeKeys('keyEnShift');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
       for (let i = 0; i < keys.length; i += 1) {
@@ -143,10 +143,10 @@ function keyDownHandler(event) {
 
 function changeShift(event) {
   if (event.type === 'mouseup') {
-    if (language === 'ru') {
-      changeKeys(keyMapRu);
+    if (localStorage.getItem('language') === 'keyRu') {
+      changeKeys('keyRu');
     } else {
-      changeKeys(keyMapEn);
+      changeKeys('keyEn');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
       for (let i = 0; i < keys.length; i += 1) {
@@ -156,10 +156,10 @@ function changeShift(event) {
       }
     }
   } else {
-    if (language === 'ru') {
-      changeKeys(keyMapRuShift);
-    } if (language === 'en') {
-      changeKeys(keyMapEnShift);
+    if (localStorage.getItem('language') === 'keyRu') {
+      changeKeys('keyRuShift');
+    } if (localStorage.getItem('language') === 'keyEn') {
+      changeKeys('keyEnShift');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
       for (let i = 0; i < keys.length; i += 1) {
@@ -235,16 +235,12 @@ function virtualKeysHandler() {
 
 function changeLanguage(event) {
   if (event.ctrlKey && event.altKey) {
-    if (language === 'ru') {
-      changeKeys(keyMapEn);
-      language = 'en';
-      const currentLang = JSON.stringify(keyMapEn);
-      localStorage.setItem('object', currentLang);
+    if (localStorage.getItem('language') === 'keyRu') {
+      changeKeys('keyEn');
+      localStorage.setItem('language', 'keyEn');
     } else {
-      changeKeys(keyMapRu);
-      language = 'ru';
-      const currentLang = JSON.stringify(keyMapRu);
-      localStorage.setItem('object', currentLang);
+      changeKeys('keyRu');
+      localStorage.setItem('language', 'keyRu');
     }
     if (caps.classList.contains('active')) {
       for (let i = 0; i < keys.length; i += 1) {
