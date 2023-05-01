@@ -40,9 +40,9 @@ function keyUpHandler(event) {
   if (event.key === 'Shift') {
     leftShift.classList.remove('active');
     rightShift.classList.remove('active');
-    if (localStorage.getItem('language') === 'keyRu') {
+    if (localStorage.getItem('language') === 'keyRuShift') {
       changeKeys('keyRu');
-    } else {
+    } else if (localStorage.getItem('language') === 'keyEnShift') {
       changeKeys('keyEn');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
@@ -61,7 +61,7 @@ function keyDownHandler(event) {
   if (event.key === 'Shift') {
     if (localStorage.getItem('language') === 'keyRu') {
       changeKeys('keyRuShift');
-    } else {
+    } else if (localStorage.getItem('language') === 'keyEn') {
       changeKeys('keyEnShift');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
@@ -125,9 +125,9 @@ function keyDownHandler(event) {
 
 function changeShift(event) {
   if (event.type === 'mouseup') {
-    if (localStorage.getItem('language') === 'keyRu') {
+    if (localStorage.getItem('language') === 'keyRuShift') {
       changeKeys('keyRu');
-    } else {
+    } else if (localStorage.getItem('language') === 'keyEnShift') {
       changeKeys('keyEn');
     }
     if (caps.classList.contains('active') || event.getModifierState('CapsLock')) {
