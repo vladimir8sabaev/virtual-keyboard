@@ -541,6 +541,25 @@ function makeRow(start, finish) {
     row.append(key.render());
   }
 }
+function init() {
+  document.querySelector('#keyboard').innerHTML = '';
+  makeRow(0, 13);
+  makeRow(14, 28);
+  makeRow(29, 41);
+  makeRow(42, 54);
+  makeRow(55, 63);
+}
 
-export { makeRow, KeyboardKey };
+function createMarkup() {
+  document.querySelector('body').innerHTML = `
+                  <textarea class="textarea" name="textarea"
+                  id="textarea" cols="100" rows="20"></textarea>
+                  <div id="keyboard"></div>
+                  <h2 class="descr">Keyboard was made on Windows</h2>
+                  <h2 class="descr">Click left Ctrl + left Alt to change language</h2>
+                  `;
+}
+
+export { KeyboardKey };
 export { alphabet };
+export { makeRow, init, createMarkup };

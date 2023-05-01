@@ -1,25 +1,12 @@
 import './index.html';
 import './style.scss';
-import { makeRow, alphabet } from './modules/renderKeyboard.js';
-
-document.querySelector('body').innerHTML = `
-                  <textarea class="textarea" name="textarea" id="textarea" cols="100" rows="20"></textarea>
-                  <div id="keyboard"></div>
-                  <h2 class="descr">Keyboard was made on Windows</h2>
-                  <h2 class="descr">Click left Ctrl + left Alt to change language</h2>
-                  `;
+import { alphabet, init, createMarkup } from './modules/renderKeyboard.js';
 
 let cursorPosition = 0;
-const specialArr = ['Backspace', 'Tab', 'CapsLock', 'Enter', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight', 'ControlRight', 'Delete'];
+const specialArr = ['Backspace', 'Tab', 'CapsLock', 'Enter', 'ShiftLeft',
+  'ShiftRight', 'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight', 'ControlRight', 'Delete'];
 
-function init() {
-  document.querySelector('#keyboard').innerHTML = '';
-  makeRow(0, 13);
-  makeRow(14, 28);
-  makeRow(29, 41);
-  makeRow(42, 54);
-  makeRow(55, 63);
-}
+createMarkup();
 init();
 
 const textArea = document.querySelector('.textarea');
@@ -54,7 +41,7 @@ function keyUpHandler(event) {
     leftShift.classList.remove('active');
     rightShift.classList.remove('active');
     if (localStorage.getItem('language') === 'keyRu') {
-      changeKeys('keyRn');
+      changeKeys('keyRu');
     } else {
       changeKeys('keyEn');
     }
@@ -128,13 +115,8 @@ function keyDownHandler(event) {
   if (activeKey && event.code !== 'CapsLock') {
     activeKey.classList.add('active');
     if (specialArr.indexOf(event.code) === -1) {
-      if (event.getModifierState('CapsLock')) {
-        textArea.value = `${textArea.value.slice(0, cursorPosition)}${activeKey.textContent.toUpperCase()}${
-          textArea.value.slice(cursorPosition)}`;
-      } else {
-        textArea.value = `${textArea.value.slice(0, cursorPosition)}${activeKey.textContent}${
-          textArea.value.slice(cursorPosition)}`;
-      }
+      textArea.value = `${textArea.value.slice(0, cursorPosition)}${activeKey.textContent}${
+        textArea.value.slice(cursorPosition)}`;
       cursorPosition += 1;
       setCaretPosition(textArea, cursorPosition, cursorPosition);
     }
