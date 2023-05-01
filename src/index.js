@@ -159,7 +159,7 @@ function virtualKeysHandler() {
       cursorPosition = textArea.selectionStart;
       textArea.focus();
       keys.forEach((item) => {
-        if (item.dataset.code !== 'CapsLock') {
+        if (item.dataset.code !== 'CapsLock' && item.dataset.code !== 'ShiftLeft' && item.dataset.code !== 'ShiftRight') {
           item.classList.remove('active');
         }
       });
